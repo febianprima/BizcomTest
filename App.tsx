@@ -14,8 +14,8 @@ import {store} from './src/store';
 function App(): React.JSX.Element {
   return (
     <Provider store={store}>
-      <SafeAreaView className="bg-white">
-        <StatusBar backgroundColor={'orchid'} />
+      <SafeAreaView className="bg-fuchsia-700">
+        <StatusBar animated={true} />
         <DashboardScreen />
       </SafeAreaView>
     </Provider>

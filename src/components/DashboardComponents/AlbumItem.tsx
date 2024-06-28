@@ -8,12 +8,13 @@ const AlbumItem = ({played, item, index, onPlay}: albumItemType) => {
   return (
     <View
       className={`flex-row items-center justify-between p-4 h-20 ${
-        played === index ? 'bg-red' : ''
-      }`}>
+        played === index ? 'bg-purple-100' : 'bg-white'
+      }
+      `}>
       <View className="flex-row items-center">
         <MaterialCommunityIcons name={'music-box'} size={32} color={'purple'} />
         <Text
-          className={'ml-2 w-4/5 text-base text-slate-600'}
+          className={'ml-2 w-4/5 text-base text-slate-600 capitalize'}
           numberOfLines={2}>
           {title}
         </Text>
