@@ -5,8 +5,9 @@ export interface albumType {
 }
 
 export interface albumItemType {
-  played: number | undefined;
+  played: number | void;
   item: albumType;
   index: number;
   onPlay: Function;
+  state: string;
 }

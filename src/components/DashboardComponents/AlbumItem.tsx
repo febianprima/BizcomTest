@@ -3,12 +3,14 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {albumItemType} from '../../types/albumsType';
 
-const AlbumItem = ({played, item, index, onPlay}: albumItemType) => {
+const AlbumItem = ({played, item, index, onPlay, state}: albumItemType) => {
   const {title} = item || {};
   return (
     <View
       className={`flex-row items-center justify-between p-4 h-20 ${
-        played === index ? 'bg-purple-100' : 'bg-white'
+        typeof played === 'number' && played === index
+          ? 'bg-purple-100'
+          : 'bg-white'
       }
       `}>
       <View className="flex-row items-center">
@@ -24,9 +26,19 @@ const AlbumItem = ({played, item, index, onPlay}: albumItemType) => {
           onPlay(index);
         }}>
         <MaterialCommunityIcons
-          name={played === index ? 'waveform' : 'play-circle'}
+          name={
+            typeof played === 'number' && played === index
+              ? state === 'pause'
+                ? 'pause'
+                : 'waveform'
+              : 'play-circle'
+          }
           size={24}
-          color={played === index ? 'orchid' : 'thistle'}
+          color={
+            typeof played === 'number' && played === index
+              ? 'orchid'
+              : 'thistle'
+          }
         />
       </TouchableOpacity>
     </View>

@@ -8,19 +8,25 @@ import {
   SafeAreaView,
   TouchableOpacity,
   TextInput,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
 } from 'react-native';
 import {useGetAlbumQuery} from '../api';
 import {albumType} from '../types/albumsType';
 import AlbumItem from '../components/DashboardComponents/AlbumItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import TrackPlayer from 'react-native-track-player';
+import {audio} from '../assets/data/audio';
+import AudioPlayer from '../components/DashboardComponents/AudioPlayer';
 
 const DashboardScreen = (): ReactElement => {
   const [page, setPage] = useState<number>(1);
   const [albums, setAlbums] = useState<albumType[]>();
   const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
-  const [played, setPlayed] = useState<number>();
+  const [played, setPlayed] = useState<number | void>();
   const [query, setQuery] = useState<string>('');
   const [show, setShow] = useState<boolean>(false);
+  const [state, setState] = useState<string>('reset');
 
   const {data: newAlbums = [], isLoading} = useGetAlbumQuery(
     {page, query},
@@ -29,8 +35,28 @@ const DashboardScreen = (): ReactElement => {
     },
   );
 
-  const onPlay = (i: number) => {
+  const onPlay = async (i: number) => {
     setPlayed(i);
+
+    await TrackPlayer.reset();
+    const track = audio[i % 3];
+
+    await TrackPlayer.add([track]);
+    await TrackPlayer.play();
+    setState('play');
+  };
+
+  const onRefresh = () => {
+    setPage(1);
+    setAlbums([]);
+    setPlayed();
+    setIsFetchingMore(true);
+  };
+
+  const handleSearch = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const val: string = e?.nativeEvent?.text || '';
+    setQuery(val);
+    onRefresh();
   };
 
   useEffect(() => {
@@ -40,7 +66,7 @@ const DashboardScreen = (): ReactElement => {
       );
       setIsFetchingMore(false);
     }
-  }, [newAlbums, page]);
+  }, [newAlbums, isFetchingMore]);
 
   return (
     <SafeAreaView className={'pt-4 bg-white'}>
@@ -66,14 +92,7 @@ const DashboardScreen = (): ReactElement => {
             <TextInput
               className="m-4 bg-slate-100 rounded-md px-2 py-3"
               value={query}
-              onChange={e => {
-                const val: string = e?.nativeEvent?.text || '';
-                setQuery(val);
-                setAlbums([]);
-                setPage(1);
-
-                setIsFetchingMore(true);
-              }}
+              onChange={handleSearch}
               placeholder={'Type your favorite music'}
               selectionColor={'violet'}
               clearButtonMode="while-editing"
@@ -86,11 +105,7 @@ const DashboardScreen = (): ReactElement => {
             data={albums}
             keyExtractor={(item, index: number): string => String(index)}
             refreshing={isLoading}
-            onRefresh={() => {
-              setPage(1);
-              setAlbums([]);
-              setIsFetchingMore(true);
-            }}
+            onRefresh={onRefresh}
             onEndReachedThreshold={0.1}
             onEndReached={() => {
               if (!query) {
@@ -104,6 +119,7 @@ const DashboardScreen = (): ReactElement => {
                 item={item}
                 onPlay={onPlay}
                 played={played}
+                state={state}
               />
             )}
             ItemSeparatorComponent={() => (
@@ -114,6 +130,14 @@ const DashboardScreen = (): ReactElement => {
             )}
           />
         </View>
+      )}
+      {Boolean(typeof played === 'number') && (
+        <AudioPlayer
+          albums={albums}
+          played={played}
+          setState={setState}
+          state={state}
+        />
       )}
     </SafeAreaView>
   );
