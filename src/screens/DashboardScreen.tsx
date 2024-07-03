@@ -69,15 +69,15 @@ const DashboardScreen = (): ReactElement => {
   }, [newAlbums, isFetchingMore]);
 
   return (
-    <SafeAreaView className={'pt-4 bg-white'}>
-      <View className="bg-fuchsia-700 rounded-b-3xl ">
+    <SafeAreaView className={'bg-white'}>
+      <View className="pt-4 bg-fuchsia-700 rounded-b-3xl ">
         <StyledComponent
           component={Text}
           tw={'font-bold text-xl text-white mb-4 text-center'}>
           {'Audio Album'}
         </StyledComponent>
         <TouchableOpacity
-          className="absolute right-4"
+          className="absolute top-4 right-4"
           onPress={() => {
             setShow(!show);
           }}>

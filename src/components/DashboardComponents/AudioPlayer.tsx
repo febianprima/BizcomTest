@@ -25,7 +25,7 @@ const AudioPlayer = ({albums, played, state, setState}: playerType) => {
   };
 
   return (
-    <View className="absolute bottom-0 left-0 right-0 z-5 bg-purple-100 h-48 rounded-t-3xl">
+    <View className="absolute bottom-0 left-0 right-0 z-5 bg-purple-100 h-64 rounded-t-3xl">
       <Text className="text-center font-bold text-slate-500 pt-4 capitalize text-base px-4">
         {albums?.length && typeof played === 'number'
           ? albums[played]?.title
